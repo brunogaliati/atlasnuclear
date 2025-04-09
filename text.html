@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dados globais sobre arsenais nucleares, gastos militares e estratégias de defesa das principais potências nucleares mundiais." />
+  <title>Atlas Nuclear Global | Panorama dos Arsenais Nucleares Mundiais</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --color-bg: #f8f9fa;
+      --color-bg-secondary: #ffffff;
+      --color-sidebar: #edf2f7;
+      --color-card: #ffffff;
+      --color-header: #ffffff;
+      --color-text: #2d3748;
+      --color-text-secondary: #4a5568;
+      --color-border: #e2e8f0;
+      --color-primary: #3182ce;
+      --color-primary-hover: #2b6cb0;
+      --color-success: #38a169;
+      --color-warning: #d69e2e;
+      --color-danger: #e53e3e;
+      --color-accent-1: #6b46c1; 
+      --color-accent-2: #3182ce; 
+      --color-accent-3: #dd6b20; 
+      --color-accent-4: #38a169; 
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 24px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --transition-fast: 0.15s ease;
+    }
+
+    /* Estilos para Emojis */
+    .emoji {
+      display: inline-block;
+      margin-right: 4px;
+      font-size: 1em;
+    }
+    
+    h3 .emoji, h4 .emoji {
+      font-size: 1.2em;
+    }
+    
+    .dashboard-title .emoji {
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+    
+    .stat-title .emoji {
+      font-size: 1.4em;
+      vertical-align: middle;
+    }
+    
+    .sidebar-title .emoji {
+      font-size: 1.3em;
+    }
+    
+    /* Remover animações para melhorar desempenho */
+    /* Efeitos de hover simplificados */
+    .sidebar-link:hover, .nav-links a:hover {
+      background-color: rgba(49, 130, 206, 0.1);
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+    }
+    
+    /* Remover animações dos cards */
+    .card {
+      transition: none;
+    }
+    
+    .card:hover {
+      transform: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Estilo base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--color-primary-hover);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+    }
+
+    button, .btn {
+      cursor: pointer;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      border: none;
+      background-color: var(--color-bg-secondary);
+      color: var(--color-text);
+      font-size: 13px;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    nav {
+      height: 50px;
+      background-color: var(--color-header);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      padding: 0 var(--spacing-lg);
+    }
+
+    .logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: var(--spacing-xs);
+      color: var(--color-warning);
+    }
+
+    .nav-links {
+      display: flex;
+    }
+
+    .nav-links a {
+      color: var(--color-text);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      margin-left: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: var(--color-sidebar);
+      padding: var(--spacing-md);
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .sidebar-section {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-accent-1);
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-items {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: var(--spacing-xs);
+      cursor: pointer;
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+    }
+
+    .sidebar-item input[type="checkbox"] {
+      margin-right: var(--spacing-xs);
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-link {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      margin-bottom: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-link i {
+      margin-right: var(--spacing-xs);
+      color: var(--color-accent-3);
+      width: 16px;
+      text-align: center;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: var(--spacing-md);
+      overflow-y: auto;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .dashboard-title {
+      font-size: 24px;
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-accent-2);
+    }
+
+    .dashboard-description {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .filters-panel {
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .filters-title {
+      margin-bottom: var(--spacing-md);
+      color: var(--color-accent-4);
+      font-size: 16px;
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .control-label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text-secondary);
+      font-size: 13px;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper:after {
+      content: '\f078';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+
+    select {
+      width: 100%;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      appearance: none;
+      font-size: 13px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-sm);
+    }
+
+    .grid {
+      display: grid;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .stat-card {
+      background-color: var(--color-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-trend {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-trend i {
+      margin-right: var(--spacing-xs);
+    }
+
+    .trend-up {
+      color: var(--color-success);
+    }
+
+    .trend-down {
+      color: var(--color-danger);
+    }
+
+    .card {
+      background-color: var(--color-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .card-header {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--color-header);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-title i {
+      margin-right: var(--spacing-xs);
+      color: var(--color-accent-1);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    /* Otimizar a visualização de gráficos */
+    .chart-wrapper {
+      padding: var(--spacing-md);
+      height: 300px;
+      background-color: white;
+    }
+    
+    /* Correção para os gráficos não carregarem */
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - 60px);
+    }
+
+    nav {
+      height: 60px;
+      background-color: var(--color-header);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      padding: 0 var(--spacing-xl);
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-accent-2);
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: var(--spacing-sm);
+      color: var(--color-warning);
+    }
+
+    .nav-links {
+      display: flex;
+    }
+
+    .nav-links a {
+      color: var(--color-text);
+      padding: var(--spacing-sm) var(--spacing-md);
+      margin-left: var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition-fast);
+    }
+
+    .nav-links a:hover {
+      background-color: rgba(76, 110, 245, 0.1);
+    }
+
+    .nav-links a i {
+      margin-right: var(--spacing-xs);
+      color: var(--color-accent-2);
+    }
+
+    .mobile-menu {
+      display: none;
+      font-size: 24px;
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--color-sidebar);
+      padding: var(--spacing-lg);
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+    }
+
+    .sidebar-section {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .sidebar-title {
+      font-size: 16px;
+      margin-bottom: var(--spacing-md);
+      color: var(--color-accent-1);
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-items {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+      cursor: pointer;
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition-fast);
+    }
+
+    .sidebar-item:hover {
+      background-color: rgba(76, 110, 245, 0.05);
+    }
+
+    .sidebar-item input[type="checkbox"] {
+      margin-right: var(--spacing-sm);
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-link {
+      padding: var(--spacing-sm);
+      margin-bottom: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      transition: background-color var(--transition-fast);
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-link i {
+      margin-right: var(--spacing-sm);
+      color: var(--color-accent-3);
+      width: 20px;
+      text-align: center;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: var(--spacing-lg);
+      overflow-y: auto;
+    }
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      margin-bottom: var(--spacing-xl);
+      text-align: center;
+    }
+
+    .dashboard-title {
+      font-size: 32px;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-accent-2);
+    }
+
+    .dashboard-description {
+      color: var(--color-text-secondary);
+      font-size: 16px;
+    }
+
+    .filters-panel {
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .filters-title {
+      margin-bottom: var(--spacing-lg);
+      color: var(--color-accent-4);
+      font-size: 20px;
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper:after {
+      content: '\f078';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+
+    select {
+      width: 100%;
+      padding: var(--spacing-md);
+      background-color: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      appearance: none;
+      font-size: 14px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-md);
+    }
+
+    .grid {
+      display: grid;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-card {
+      background-color: var(--color-card);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      text-align: center;
+      transition: none;
+    }
+
+    .stat-title {
+      font-size: 16px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .stat-trend {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-trend i {
+      margin-right: var(--spacing-xs);
+    }
+
+    .trend-up {
+      color: var(--color-success);
+    }
+
+    .trend-down {
+      color: var(--color-danger);
+    }
+
+    .card {
+      background-color: var(--color-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .card-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--color-header);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-title i {
+      margin-right: var(--spacing-sm);
+      color: var(--color-accent-1);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .data-table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: var(--spacing-md);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    th {
+      background-color: var(--color-header);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(76, 110, 245, 0.05);
+    }
+
+    /* Seção Sobre */
+    .about-content {
+      padding: var(--spacing-lg);
+    }
+
+    .about-content p {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .about-content h4 {
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-accent-1);
+      font-size: 18px;
+    }
+
+    .about-content ul {
+      list-style-position: inside;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .about-content li {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--color-header);
+      padding: var(--spacing-lg) 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--spacing-lg);
+    }
+
+    .footer-links a {
+      color: var(--color-text-secondary);
+      transition: color var(--transition-fast);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-accent-2);
+    }
+
+    /* Media Queries */
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        order: 2;
+      }
+
+      .main-content {
+        order: 1;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .filters-row {
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-radiation"></i> Atlas Nuclear Global
+      </div>
+      <div class="nav-links">
+        <a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="#data"><i class="fas fa-table"></i> Dados</a>
+        <a href="#about"><i class="fas fa-info-circle"></i> Sobre</a>
+      </div>
+      <div class="mobile-menu">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title"><span class="emoji">🌎</span> Filtrar por Região</h3>
+        <div class="sidebar-items">
+          <div class="sidebar-item">
+            <input type="checkbox" id="region-all" class="region-filter" value="all" checked>
+            <label for="region-all">Todos</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="region-america" class="region-filter" value="america">
+            <label for="region-america"><span class="emoji">🌎</span> América</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="region-europe" class="region-filter" value="europe">
+            <label for="region-europe"><span class="emoji">🌍</span> Europa</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="region-asia" class="region-filter" value="asia">
+            <label for="region-asia"><span class="emoji">🌏</span> Ásia</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title"><span class="emoji">💣</span> Capacidade Nuclear</h3>
+        <div class="sidebar-items">
+          <div class="sidebar-item">
+            <input type="checkbox" id="capacity-all" class="capacity-filter" value="all" checked>
+            <label for="capacity-all">Todos</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="capacity-high" class="capacity-filter" value="high">
+            <label for="capacity-high"><span class="emoji">🔴</span> Alta (>1000)</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="capacity-medium" class="capacity-filter" value="medium">
+            <label for="capacity-medium"><span class="emoji">🟠</span> Média (100-1000)</label>
+          </div>
+          <div class="sidebar-item">
+            <input type="checkbox" id="capacity-low" class="capacity-filter" value="low">
+            <label for="capacity-low"><span class="emoji">🟡</span> Baixa (<100)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title"><span class="emoji">📚</span> Recursos</h3>
+        <div class="sidebar-menu">
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-file-alt"></i> Relatórios
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-download"></i> Baixar Dados
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-chart-line"></i> Histórico
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-book"></i> Metodologia
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title"><span class="emoji">☢️</span> Panorama Nuclear Global</h1>
+          <p class="dashboard-description">Monitoramento de arsenais nucleares mundiais e análise de dados estratégicos</p>
+        </div>
+
+        <!-- Painel de Filtros Interativo - Ponto Focal Principal -->
+        <div class="filters-panel">
+          <h2 class="filters-title"><i class="fas fa-filter"></i> Centro de Visualização de Dados <span class="emoji">🔍</span></h2>
+          
+          <div class="filters-row">
+            <div class="filter-group">
+              <label class="control-label"><span class="emoji">👁️</span> Visualizar por</label>
+              <div class="select-wrapper">
+                <select id="visualization-type">
+                  <option value="overview">Visão Geral</option>
+                  <option value="warheads">Ogivas Nucleares</option>
+                  <option value="spending">Gastos Militares</option>
+                  <option value="doctrine">Doutrinas Estratégicas</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label class="control-label"><span class="emoji">📊</span> Tipo de Gráfico</label>
+              <div class="select-wrapper">
+                <select id="chart-type">
+                  <option value="bar">Barras</option>
+                  <option value="pie">Pizza</option>
+                  <option value="line">Linha</option>
+                  <option value="radar">Radar</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label class="control-label"><span class="emoji">🔢</span> Ordenar por</label>
+              <div class="select-wrapper">
+                <select id="sort-by">
+                  <option value="name">Nome do País</option>
+                  <option value="active" selected>Ogivas Ativas</option>
+                  <option value="total">Ogivas Totais</option>
+                  <option value="budget">Orçamento Militar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-buttons">
+            <button id="reset-filters" class="btn">
+              <i class="fas fa-undo"></i> Resetar
+            </button>
+            <button id="apply-filters" class="btn btn-primary pulse">
+              <i class="fas fa-eye"></i> Visualizar
+            </button>
+          </div>
+        </div>
+
+        <!-- Estatísticas Principais -->
+        <div class="stats-grid">
+          <div class="stat-card float">
+            <div class="stat-title"><span class="emoji">💣</span> Total de Ogivas</div>
+            <div class="stat-value" id="total-warheads">13,082</div>
+            <div class="stat-trend trend-down">
+              <i class="fas fa-arrow-down"></i> 3.5% desde 2020
+            </div>
+          </div>
+          <div class="stat-card float">
+            <div class="stat-title"><span class="emoji">🚀</span> Ogivas Ativas</div>
+            <div class="stat-value" id="active-warheads">4,344</div>
+            <div class="stat-trend trend-down">
+              <i class="fas fa-arrow-down"></i> 2.1% desde 2020
+            </div>
+          </div>
+          <div class="stat-card float">
+            <div class="stat-title"><span class="emoji">💰</span> Gasto Global Nuclear</div>
+            <div class="stat-value" id="nuclear-spending">$82.4 bi</div>
+            <div class="stat-trend trend-up">
+              <i class="fas fa-arrow-up"></i> 8.7% desde 2020
+            </div>
+          </div>
+          <div class="stat-card float">
+            <div class="stat-title"><span class="emoji">🌐</span> Países com Armas Nucleares</div>
+            <div class="stat-value" id="nuclear-countries">9</div>
+            <div class="stat-trend">
+              <i class="fas fa-equals"></i> Sem alteração
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráficos Principais -->
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-chart-bar"></i> <span id="primary-chart-title">Ogivas Nucleares por País</span> <span class="emoji">📊</span></h3>
+              <div class="card-actions">
+                <button class="btn btn-small" id="download-chart">
+                  <i class="fas fa-download"></i>
+                </button>
+                <button class="btn btn-small" id="expand-chart">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="primary-chart"></canvas>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fas fa-chart-pie"></i> <span id="secondary-chart-title">Gastos em Armas Nucleares</span> <span class="emoji">💲</span></h3>
+              <div class="card-actions">
+                <button class="btn btn-small" id="download-chart-2">
+                  <i class="fas fa-download"></i>
+                </button>
+                <button class="btn btn-small" id="expand-chart-2">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="secondary-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Dados -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-table"></i> Dados Detalhados <span class="emoji">🧮</span></h3>
+            <div class="card-actions">
+              <div class="select-wrapper">
+                <select id="table-view">
+                  <option value="all">Todos os Dados</option>
+                  <option value="nuclear">Capacidade Nuclear</option>
+                  <option value="military">Gastos Militares</option>
+                  <option value="strategy">Estratégia Nuclear</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="data-table-wrapper">
+            <table id="nuclear-data-table">
+              <thead>
+                <tr>
+                  <th>País</th>
+                  <th>Ogivas Ativas</th>
+                  <th>Ogivas Totais</th>
+                  <th>Triatlo Nuclear</th>
+                  <th>Prontidão</th>
+                  <th>Sofisticação</th>
+                  <th>Doutrina</th>
+                  <th>Orçamento (US$ bi)</th>
+                  <th>% PIB</th>
+                  <th>Gasto Nuclear (US$ bi)</th>
+                </tr>
+              </thead>
+              <tbody id="data-table">
+                <!-- Dados serão inseridos via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção Sobre -->
+      <div id="about" class="section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-info-circle"></i> Sobre o Atlas Nuclear Global <span class="emoji">ℹ️</span></h3>
+          </div>
+          <div class="about-content">
+            <p>O Atlas Nuclear Global é uma iniciativa independente para rastrear e analisar os arsenais nucleares mundiais e seus impactos na segurança internacional.</p>
+            <p>Nossos dados são compilados a partir de fontes públicas confiáveis, incluindo institutos de pesquisa especializados em segurança internacional, relatórios governamentais e análises acadêmicas.</p>
+            <p>Esta plataforma não defende nenhuma posição política específica, mas busca fornecer dados objetivos para informar discussões sobre políticas de segurança, controle de armas e desarmamento.</p>
+            
+            <h4><span class="emoji">📝</span> Metodologia</h4>
+            <p>Os dados apresentados neste atlas são atualizados anualmente e derivados de múltiplas fontes, incluindo:</p>
+            <ul>
+              <li><span class="emoji">🔍</span> Stockholm International Peace Research Institute (SIPRI)</li>
+              <li><span class="emoji">🔍</span> Federation of American Scientists (FAS)</li>
+              <li><span class="emoji">🔍</span> Bulletin of the Atomic Scientists</li>
+              <li><span class="emoji">🔍</span> Relatórios oficiais governamentais</li>
+            </ul>
+            
+            <h4><span class="emoji">👥</span> Equipe</h4>
+            <p>O Atlas Nuclear Global é mantido por uma equipe de pesquisadores independentes especializados em segurança internacional, políticas nucleares e análise de dados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div>© 2023 Atlas Nuclear Global <span class="emoji">🌐</span> Todos os direitos reservados.</div>
+      <div class="footer-links">
+        <a href="#">Política de Privacidade</a>
+        <a href="#">Termos de Uso</a>
+        <a href="#">Contato</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Dados dos países
+    const countriesData = [
+      {
+        pais: 'EUA', 
+        ativas: 1770, 
+        totais: 5244, 
+        triatlo: 'Completo', 
+        prontidao: 'Muito alta', 
+        sofist: 'Muito alta', 
+        doutrina: 'Uso em resposta (flexível)', 
+        orcamento: 916, 
+        pib: 3.4, 
+        gastoNuclear: 44,
+        regiao: 'america',
+        capacidade: 'high'
+      },
+      {
+        pais: 'Rússia', 
+        ativas: 1674, 
+        totais: 5889, 
+        triatlo: 'Completo', 
+        prontidao: 'Muito alta', 
+        sofist: 'Muito alta', 
+        doutrina: 'Uso primeiro possível', 
+        orcamento: 109, 
+        pib: 5.9, 
+        gastoNuclear: 9.6,
+        regiao: 'europe',
+        capacidade: 'high'
+      },
+      {
+        pais: 'China', 
+        ativas: 150, 
+        totais: 410, 
+        triatlo: 'Em expansão', 
+        prontidao: 'Média', 
+        sofist: 'Alta', 
+        doutrina: 'Dissuasão mínima', 
+        orcamento: 296, 
+        pib: 1.7, 
+        gastoNuclear: 11.7,
+        regiao: 'asia',
+        capacidade: 'medium'
+      },
+      {
+        pais: 'França', 
+        ativas: 280, 
+        totais: 290, 
+        triatlo: 'Parcial', 
+        prontidao: 'Alta', 
+        sofist: 'Alta', 
+        doutrina: 'Dissuasão mínima independente', 
+        orcamento: 61.3, 
+        pib: 2.1, 
+        gastoNuclear: 4.0,
+        regiao: 'europe',
+        capacidade: 'medium'
+      },
+      {
+        pais: 'Reino Unido', 
+        ativas: 120, 
+        totais: 225, 
+        triatlo: 'Parcial', 
+        prontidao: 'Alta', 
+        sofist: 'Alta', 
+        doutrina: 'Dissuasão mínima OTAN', 
+        orcamento: 74.9, 
+        pib: 2.3, 
+        gastoNuclear: 6.0,
+        regiao: 'europe',
+        capacidade: 'medium'
+      },
+      {
+        pais: 'Índia', 
+        ativas: 110, 
+        totais: 164, 
+        triatlo: 'Parcial', 
+        prontidao: 'Média', 
+        sofist: 'Média', 
+        doutrina: 'Dissuasão mínima', 
+        orcamento: 81.4, 
+        pib: 2.9, 
+        gastoNuclear: 2.8,
+        regiao: 'asia',
+        capacidade: 'medium'
+      },
+      {
+        pais: 'Paquistão', 
+        ativas: 130, 
+        totais: 170, 
+        triatlo: 'Parcial', 
+        prontidao: 'Média', 
+        sofist: 'Média', 
+        doutrina: 'Assimétrica contra Índia', 
+        orcamento: 13.8, 
+        pib: 4.1, 
+        gastoNuclear: 1.2,
+        regiao: 'asia',
+        capacidade: 'medium'
+      },
+      {
+        pais: 'Israel', 
+        ativas: 90, 
+        totais: 90, 
+        triatlo: 'Presumido', 
+        prontidao: 'Alta', 
+        sofist: 'Alta', 
+        doutrina: 'Ambiguidade deliberada', 
+        orcamento: 23.4, 
+        pib: 5.2, 
+        gastoNuclear: 1.9,
+        regiao: 'asia',
+        capacidade: 'low'
+      },
+      {
+        pais: 'Coreia do Norte', 
+        ativas: 20, 
+        totais: 30, 
+        triatlo: 'Em desenvolvimento', 
+        prontidao: 'Baixa', 
+        sofist: 'Baixa', 
+        doutrina: 'Sobrevivência do regime', 
+        orcamento: 4.0, 
+        pib: 15.9, 
+        gastoNuclear: 0.7,
+        regiao: 'asia',
+        capacidade: 'low'
+      }
+    ];
+
+    // Cores para gráficos
+    const chartColors = {
+      backgrounds: [
+        'rgba(59, 130, 246, 0.7)',
+        'rgba(239, 68, 68, 0.7)',
+        'rgba(16, 185, 129, 0.7)',
+        'rgba(249, 115, 22, 0.7)',
+        'rgba(139, 92, 246, 0.7)',
+        'rgba(236, 72, 153, 0.7)',
+        'rgba(234, 179, 8, 0.7)',
+        'rgba(8, 145, 178, 0.7)',
+        'rgba(217, 70, 239, 0.7)'
+      ],
+      borders: [
+        'rgba(59, 130, 246, 1)',
+        'rgba(239, 68, 68, 1)',
+        'rgba(16, 185, 129, 1)',
+        'rgba(249, 115, 22, 1)',
+        'rgba(139, 92, 246, 1)',
+        'rgba(236, 72, 153, 1)',
+        'rgba(234, 179, 8, 1)',
+        'rgba(8, 145, 178, 1)',
+        'rgba(217, 70, 239, 1)'
+      ]
+    };
+
+    // Variáveis para os gráficos
+    let primaryChart;
+    let secondaryChart;
+    let filteredData = [...countriesData];
+
+    // Estado dos filtros
+    const filterState = {
+      visualization: 'overview',
+      chartType: 'bar',
+      sortBy: 'active',
+      regions: ['all'],
+      capacities: ['all']
+    };
+
+    // Funções de inicialização
+    function init() {
+      populateTable(countriesData);
+      renderCharts();
+      updateStats(countriesData);
+      setupEventListeners();
+    }
+
+    // Configura os eventos da interface
+    function setupEventListeners() {
+      // Botão de aplicar filtros
+      document.getElementById('apply-filters').addEventListener('click', function() {
+        filterData();
+        renderCharts();
+      });
+      
+      // Botão de resetar filtros
+      document.getElementById('reset-filters').addEventListener('click', function() {
+        resetFilters();
+        renderCharts();
+      });
+      
+      // Tipo de visualização
+      document.getElementById('visualization-type').addEventListener('change', function() {
+        filterState.visualization = this.value;
+      });
+      
+      // Tipo de gráfico
+      document.getElementById('chart-type').addEventListener('change', function() {
+        filterState.chartType = this.value;
+      });
+      
+      // Ordenação
+      document.getElementById('sort-by').addEventListener('change', function() {
+        filterState.sortBy = this.value;
+      });
+    }
+
+    // Renderiza os gráficos
+    function renderCharts() {
+      renderPrimaryChart();
+      renderSecondaryChart();
+    }
+
+    // Renderiza o gráfico principal
+    function renderPrimaryChart() {
+      const ctx = document.getElementById('primary-chart').getContext('2d');
+      
+      // Destruir o gráfico existente se houver
+      if (primaryChart) {
+        primaryChart.destroy();
+      }
+      
+      // Ordenar dados conforme o filtro
+      const sortedData = [...filteredData].sort((a, b) => {
+        if (filterState.sortBy === 'active') return b.ativas - a.ativas;
+        if (filterState.sortBy === 'total') return b.totais - a.totais;
+        if (filterState.sortBy === 'budget') return b.orcamento - a.orcamento;
+        return a.pais.localeCompare(b.pais);
+      });
+      
+      // Preparar dados para o gráfico
+      const labels = sortedData.map(item => item.pais);
+      const totais = sortedData.map(item => item.totais);
+      const ativas = sortedData.map(item => item.ativas);
+      
+      // Criar o gráfico
+      primaryChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Ogivas Totais',
+              data: totais,
+              backgroundColor: chartColors.backgrounds,
+              borderColor: chartColors.borders,
+              borderWidth: 1
+            },
+            {
+              label: 'Ogivas Ativas',
+              data: ativas,
+              backgroundColor: chartColors.backgrounds.map(color => color.replace('0.7', '0.9')),
+              borderColor: chartColors.borders,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#4a5568'
+              },
+              grid: {
+                color: '#e2e8f0'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#4a5568'
+              },
+              grid: {
+                display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#4a5568'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Renderiza o gráfico secundário
+    function renderSecondaryChart() {
+      const ctx = document.getElementById('secondary-chart').getContext('2d');
+      
+      // Destruir o gráfico existente se houver
+      if (secondaryChart) {
+        secondaryChart.destroy();
+      }
+      
+      // Ordenar dados conforme o filtro
+      const sortedData = [...filteredData].sort((a, b) => b.gastoNuclear - a.gastoNuclear);
+      
+      // Preparar dados para o gráfico
+      const labels = sortedData.map(item => item.pais);
+      const gastos = sortedData.map(item => item.gastoNuclear);
+      
+      // Criar o gráfico
+      secondaryChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Gastos Nucleares (US$ bi)',
+              data: gastos,
+              backgroundColor: chartColors.backgrounds,
+              borderColor: chartColors.borders,
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#4a5568'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Filtra os dados com base nos filtros selecionados
+    function filterData() {
+      filteredData = countriesData.filter(country => {
+        // Filtro por região
+        if (!filterState.regions.includes('all') && !filterState.regions.includes(country.regiao)) {
+          return false;
+        }
+        
+        // Filtro por capacidade
+        if (!filterState.capacities.includes('all') && !filterState.capacities.includes(country.capacidade)) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // Atualiza a tabela e estatísticas
+      populateTable(filteredData);
+      updateStats(filteredData);
+    }
+
+    // Reseta todos os filtros
+    function resetFilters() {
+      filterState.regions = ['all'];
+      filterState.capacities = ['all'];
+      filterState.visualization = 'overview';
+      filterState.chartType = 'bar';
+      filterState.sortBy = 'active';
+      
+      // Resetar elementos visuais
+      document.getElementById('visualization-type').value = 'overview';
+      document.getElementById('chart-type').value = 'bar';
+      document.getElementById('sort-by').value = 'active';
+      
+      // Atualizar dados filtrados
+      filteredData = [...countriesData];
+      populateTable(filteredData);
+      updateStats(filteredData);
+    }
+
+    // Popula a tabela com dados
+    function populateTable(data) {
+      const table = document.getElementById('data-table');
+      table.innerHTML = '';
+      
+      data.forEach(row => {
+        table.innerHTML += `
+          <tr>
+            <td><strong>${row.pais}</strong></td>
+            <td class="value-highlight">${row.ativas}</td>
+            <td class="value-highlight">${row.totais}</td>
+            <td>${row.triatlo}</td>
+            <td>${row.prontidao}</td>
+            <td>${row.sofist}</td>
+            <td>${row.doutrina}</td>
+            <td>${row.orcamento}</td>
+            <td>${row.pib}%</td>
+            <td>${row.gastoNuclear}</td>
+          </tr>
+        `
+      });
+    }
+
+    // Atualiza as estatísticas no topo
+    function updateStats(data) {
+      const totalWarheads = data.reduce((sum, country) => sum + country.totais, 0);
+      const activeWarheads = data.reduce((sum, country) => sum + country.ativas, 0);
+      const nuclearSpending = data.reduce((sum, country) => sum + country.gastoNuclear, 0);
+
+      document.getElementById('total-warheads').textContent = totalWarheads.toLocaleString();
+      document.getElementById('active-warheads').textContent = activeWarheads.toLocaleString();
+      document.getElementById('nuclear-spending').textContent = `$${nuclearSpending.toFixed(1)} bi`;
+      document.getElementById('nuclear-countries').textContent = data.length;
+    }
+    
+    // Inicializa a aplicação quando o documento estiver carregado
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
