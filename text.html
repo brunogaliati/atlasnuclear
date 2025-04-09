@@ -426,18 +426,19 @@
       padding: var(--spacing-md);
       height: 300px;
       background-color: white;
+      position: relative;
     }
-    
-    /* Correção para os gráficos não carregarem */
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
+
+    /* Correção específica para gráficos */
+    #primary-chart, #secondary-chart {
+      max-height: 100%;
+      max-width: 100%;
     }
 
     /* Layout */
     .app-container {
       display: flex;
-      min-height: calc(100vh - 60px);
+      min-height: 100vh;
     }
 
     nav {
@@ -896,7 +897,7 @@
   <div class="app-container">
     <div class="sidebar">
       <div class="sidebar-section">
-        <h3 class="sidebar-title"><span class="emoji">🌎</span> Filtrar por Região</h3>
+        <h3 class="sidebar-title">Filtrar por Região</h3>
         <div class="sidebar-items">
           <div class="sidebar-item">
             <input type="checkbox" id="region-all" class="region-filter" value="all" checked>
@@ -904,21 +905,21 @@
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="region-america" class="region-filter" value="america">
-            <label for="region-america"><span class="emoji">🌎</span> América</label>
+            <label for="region-america">América</label>
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="region-europe" class="region-filter" value="europe">
-            <label for="region-europe"><span class="emoji">🌍</span> Europa</label>
+            <label for="region-europe">Europa</label>
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="region-asia" class="region-filter" value="asia">
-            <label for="region-asia"><span class="emoji">🌏</span> Ásia</label>
+            <label for="region-asia">Ásia</label>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
-        <h3 class="sidebar-title"><span class="emoji">💣</span> Capacidade Nuclear</h3>
+        <h3 class="sidebar-title">Capacidade Nuclear</h3>
         <div class="sidebar-items">
           <div class="sidebar-item">
             <input type="checkbox" id="capacity-all" class="capacity-filter" value="all" checked>
@@ -926,21 +927,21 @@
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="capacity-high" class="capacity-filter" value="high">
-            <label for="capacity-high"><span class="emoji">🔴</span> Alta (>1000)</label>
+            <label for="capacity-high">Alta (>1000)</label>
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="capacity-medium" class="capacity-filter" value="medium">
-            <label for="capacity-medium"><span class="emoji">🟠</span> Média (100-1000)</label>
+            <label for="capacity-medium">Média (100-1000)</label>
           </div>
           <div class="sidebar-item">
             <input type="checkbox" id="capacity-low" class="capacity-filter" value="low">
-            <label for="capacity-low"><span class="emoji">🟡</span> Baixa (<100)</label>
+            <label for="capacity-low">Baixa (<100)</label>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
-        <h3 class="sidebar-title"><span class="emoji">📚</span> Recursos</h3>
+        <h3 class="sidebar-title">Recursos</h3>
         <div class="sidebar-menu">
           <a href="#" class="sidebar-link">
             <i class="fas fa-file-alt"></i> Relatórios
@@ -961,17 +962,17 @@
     <div class="main-content">
       <div class="dashboard" id="dashboard">
         <div class="dashboard-header">
-          <h1 class="dashboard-title"><span class="emoji">☢️</span> Panorama Nuclear Global</h1>
+          <h1 class="dashboard-title">Panorama Nuclear Global</h1>
           <p class="dashboard-description">Monitoramento de arsenais nucleares mundiais e análise de dados estratégicos</p>
         </div>
 
         <!-- Painel de Filtros Interativo - Ponto Focal Principal -->
         <div class="filters-panel">
-          <h2 class="filters-title"><i class="fas fa-filter"></i> Centro de Visualização de Dados <span class="emoji">🔍</span></h2>
+          <h2 class="filters-title"><i class="fas fa-filter"></i> Centro de Visualização de Dados</h2>
           
           <div class="filters-row">
             <div class="filter-group">
-              <label class="control-label"><span class="emoji">👁️</span> Visualizar por</label>
+              <label class="control-label">Visualizar por</label>
               <div class="select-wrapper">
                 <select id="visualization-type">
                   <option value="overview">Visão Geral</option>
@@ -983,7 +984,7 @@
             </div>
             
             <div class="filter-group">
-              <label class="control-label"><span class="emoji">📊</span> Tipo de Gráfico</label>
+              <label class="control-label">Tipo de Gráfico</label>
               <div class="select-wrapper">
                 <select id="chart-type">
                   <option value="bar">Barras</option>
@@ -995,7 +996,7 @@
             </div>
             
             <div class="filter-group">
-              <label class="control-label"><span class="emoji">🔢</span> Ordenar por</label>
+              <label class="control-label">Ordenar por</label>
               <div class="select-wrapper">
                 <select id="sort-by">
                   <option value="name">Nome do País</option>
@@ -1019,29 +1020,29 @@
 
         <!-- Estatísticas Principais -->
         <div class="stats-grid">
-          <div class="stat-card float">
-            <div class="stat-title"><span class="emoji">💣</span> Total de Ogivas</div>
+          <div class="stat-card">
+            <div class="stat-title">Total de Ogivas</div>
             <div class="stat-value" id="total-warheads">13,082</div>
             <div class="stat-trend trend-down">
               <i class="fas fa-arrow-down"></i> 3.5% desde 2020
             </div>
           </div>
-          <div class="stat-card float">
-            <div class="stat-title"><span class="emoji">🚀</span> Ogivas Ativas</div>
+          <div class="stat-card">
+            <div class="stat-title">Ogivas Ativas</div>
             <div class="stat-value" id="active-warheads">4,344</div>
             <div class="stat-trend trend-down">
               <i class="fas fa-arrow-down"></i> 2.1% desde 2020
             </div>
           </div>
-          <div class="stat-card float">
-            <div class="stat-title"><span class="emoji">💰</span> Gasto Global Nuclear</div>
+          <div class="stat-card">
+            <div class="stat-title">Gasto Global Nuclear</div>
             <div class="stat-value" id="nuclear-spending">$82.4 bi</div>
             <div class="stat-trend trend-up">
               <i class="fas fa-arrow-up"></i> 8.7% desde 2020
             </div>
           </div>
-          <div class="stat-card float">
-            <div class="stat-title"><span class="emoji">🌐</span> Países com Armas Nucleares</div>
+          <div class="stat-card">
+            <div class="stat-title">Países com Armas Nucleares</div>
             <div class="stat-value" id="nuclear-countries">9</div>
             <div class="stat-trend">
               <i class="fas fa-equals"></i> Sem alteração
@@ -1053,7 +1054,7 @@
         <div class="grid grid-2">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title"><i class="fas fa-chart-bar"></i> <span id="primary-chart-title">Ogivas Nucleares por País</span> <span class="emoji">📊</span></h3>
+              <h3 class="card-title"><i class="fas fa-chart-bar"></i> <span id="primary-chart-title">Ogivas Nucleares por País</span></h3>
               <div class="card-actions">
                 <button class="btn btn-small" id="download-chart">
                   <i class="fas fa-download"></i>
@@ -1070,7 +1071,7 @@
           
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title"><i class="fas fa-chart-pie"></i> <span id="secondary-chart-title">Gastos em Armas Nucleares</span> <span class="emoji">💲</span></h3>
+              <h3 class="card-title"><i class="fas fa-chart-pie"></i> <span id="secondary-chart-title">Gastos em Armas Nucleares</span></h3>
               <div class="card-actions">
                 <button class="btn btn-small" id="download-chart-2">
                   <i class="fas fa-download"></i>
@@ -1089,7 +1090,7 @@
         <!-- Tabela de Dados -->
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-table"></i> Dados Detalhados <span class="emoji">🧮</span></h3>
+            <h3 class="card-title"><i class="fas fa-table"></i> Dados Detalhados</h3>
             <div class="card-actions">
               <div class="select-wrapper">
                 <select id="table-view">
@@ -1342,64 +1343,27 @@
       updateStats(countriesData);
       setupEventListeners();
     }
-
-    // Configura os eventos da interface
-    function setupEventListeners() {
-      // Botão de aplicar filtros
-      document.getElementById('apply-filters').addEventListener('click', function() {
-        filterData();
-        renderCharts();
-      });
-      
-      // Botão de resetar filtros
-      document.getElementById('reset-filters').addEventListener('click', function() {
-        resetFilters();
-        renderCharts();
-      });
-      
-      // Tipo de visualização
-      document.getElementById('visualization-type').addEventListener('change', function() {
-        filterState.visualization = this.value;
-      });
-      
-      // Tipo de gráfico
-      document.getElementById('chart-type').addEventListener('change', function() {
-        filterState.chartType = this.value;
-      });
-      
-      // Ordenação
-      document.getElementById('sort-by').addEventListener('change', function() {
-        filterState.sortBy = this.value;
-      });
-    }
-
+    
     // Renderiza os gráficos
     function renderCharts() {
       renderPrimaryChart();
       renderSecondaryChart();
     }
-
-    // Renderiza o gráfico principal
+    
+    // Renderiza o gráfico principal (ogivas por país)
     function renderPrimaryChart() {
       const ctx = document.getElementById('primary-chart').getContext('2d');
       
-      // Destruir o gráfico existente se houver
+      // Destruir o gráfico anterior se existir
       if (primaryChart) {
         primaryChart.destroy();
       }
       
-      // Ordenar dados conforme o filtro
-      const sortedData = [...filteredData].sort((a, b) => {
-        if (filterState.sortBy === 'active') return b.ativas - a.ativas;
-        if (filterState.sortBy === 'total') return b.totais - a.totais;
-        if (filterState.sortBy === 'budget') return b.orcamento - a.orcamento;
-        return a.pais.localeCompare(b.pais);
-      });
-      
       // Preparar dados para o gráfico
-      const labels = sortedData.map(item => item.pais);
-      const totais = sortedData.map(item => item.totais);
-      const ativas = sortedData.map(item => item.ativas);
+      const sortedData = [...filteredData].sort((a, b) => b.ativas - a.ativas);
+      const labels = sortedData.map(country => country.pais);
+      const activeData = sortedData.map(country => country.ativas);
+      const totalData = sortedData.map(country => country.totais);
       
       // Criar o gráfico
       primaryChart = new Chart(ctx, {
@@ -1408,17 +1372,17 @@
           labels: labels,
           datasets: [
             {
-              label: 'Ogivas Totais',
-              data: totais,
-              backgroundColor: chartColors.backgrounds,
-              borderColor: chartColors.borders,
+              label: 'Ogivas Ativas',
+              data: activeData,
+              backgroundColor: chartColors.backgrounds[0],
+              borderColor: chartColors.borders[0],
               borderWidth: 1
             },
             {
-              label: 'Ogivas Ativas',
-              data: ativas,
-              backgroundColor: chartColors.backgrounds.map(color => color.replace('0.7', '0.9')),
-              borderColor: chartColors.borders,
+              label: 'Ogivas Totais',
+              data: totalData,
+              backgroundColor: chartColors.backgrounds[1],
+              borderColor: chartColors.borders[1],
               borderWidth: 1
             }
           ]
@@ -1429,48 +1393,35 @@
           scales: {
             y: {
               beginAtZero: true,
-              ticks: {
-                color: '#4a5568'
-              },
-              grid: {
-                color: '#e2e8f0'
+              title: {
+                display: true,
+                text: 'Quantidade de Ogivas'
               }
             },
             x: {
-              ticks: {
-                color: '#4a5568'
-              },
-              grid: {
-                display: false
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: '#4a5568'
+              title: {
+                display: true,
+                text: 'País'
               }
             }
           }
         }
       });
     }
-
-    // Renderiza o gráfico secundário
+    
+    // Renderiza o gráfico secundário (gastos em armas nucleares)
     function renderSecondaryChart() {
       const ctx = document.getElementById('secondary-chart').getContext('2d');
       
-      // Destruir o gráfico existente se houver
+      // Destruir o gráfico anterior se existir
       if (secondaryChart) {
         secondaryChart.destroy();
       }
       
-      // Ordenar dados conforme o filtro
-      const sortedData = [...filteredData].sort((a, b) => b.gastoNuclear - a.gastoNuclear);
-      
       // Preparar dados para o gráfico
-      const labels = sortedData.map(item => item.pais);
-      const gastos = sortedData.map(item => item.gastoNuclear);
+      const sortedData = [...filteredData].sort((a, b) => b.gastoNuclear - a.gastoNuclear);
+      const labels = sortedData.map(country => country.pais);
+      const spendingData = sortedData.map(country => country.gastoNuclear);
       
       // Criar o gráfico
       secondaryChart = new Chart(ctx, {
@@ -1479,8 +1430,8 @@
           labels: labels,
           datasets: [
             {
-              label: 'Gastos Nucleares (US$ bi)',
-              data: gastos,
+              label: 'Gastos em Armas Nucleares (US$ bi)',
+              data: spendingData,
               backgroundColor: chartColors.backgrounds,
               borderColor: chartColors.borders,
               borderWidth: 1
@@ -1492,9 +1443,15 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'right',
-              labels: {
-                color: '#4a5568'
+              position: 'right'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw || 0;
+                  return `${label}: $${value} bi`;
+                }
               }
             }
           }
@@ -1502,44 +1459,164 @@
       });
     }
 
-    // Filtra os dados com base nos filtros selecionados
-    function filterData() {
-      filteredData = countriesData.filter(country => {
-        // Filtro por região
-        if (!filterState.regions.includes('all') && !filterState.regions.includes(country.regiao)) {
-          return false;
-        }
-        
-        // Filtro por capacidade
-        if (!filterState.capacities.includes('all') && !filterState.capacities.includes(country.capacidade)) {
-          return false;
-        }
-        
-        return true;
+    // Configura os listeners de eventos
+    function setupEventListeners() {
+      // Aplicar filtros
+      document.getElementById('apply-filters').addEventListener('click', function() {
+        applyFilters();
       });
       
-      // Atualiza a tabela e estatísticas
-      populateTable(filteredData);
-      updateStats(filteredData);
-    }
-
-    // Reseta todos os filtros
-    function resetFilters() {
-      filterState.regions = ['all'];
-      filterState.capacities = ['all'];
-      filterState.visualization = 'overview';
-      filterState.chartType = 'bar';
-      filterState.sortBy = 'active';
+      // Resetar filtros
+      document.getElementById('reset-filters').addEventListener('click', function() {
+        resetFilters();
+      });
       
-      // Resetar elementos visuais
+      // Alternar entre visualizações
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = this.getAttribute('href').substring(1);
+          toggleSection(target);
+        });
+      });
+    }
+    
+    // Aplicar filtros selecionados
+    function applyFilters() {
+      // Atualizar o estado dos filtros
+      filterState.visualization = document.getElementById('visualization-type').value;
+      filterState.chartType = document.getElementById('chart-type').value;
+      filterState.sortBy = document.getElementById('sort-by').value;
+      
+      // Filtrar os dados
+      filterData();
+      
+      // Atualizar visualizações
+      updateVisualizations();
+    }
+    
+    // Resetar todos os filtros
+    function resetFilters() {
+      // Resetar selects
       document.getElementById('visualization-type').value = 'overview';
       document.getElementById('chart-type').value = 'bar';
       document.getElementById('sort-by').value = 'active';
       
-      // Atualizar dados filtrados
+      // Resetar checkboxes
+      document.querySelectorAll('.region-filter, .capacity-filter').forEach(checkbox => {
+        if (checkbox.value === 'all') {
+          checkbox.checked = true;
+        } else {
+          checkbox.checked = false;
+        }
+      });
+      
+      // Resetar o estado
+      filterState.visualization = 'overview';
+      filterState.chartType = 'bar';
+      filterState.sortBy = 'active';
+      filterState.regions = ['all'];
+      filterState.capacities = ['all'];
+      
+      // Resetar dados filtrados
       filteredData = [...countriesData];
+      
+      // Atualizar visualizações
+      updateVisualizations();
+    }
+    
+    // Filtrar dados com base nos filtros
+    function filterData() {
+      // Coletar regiões selecionadas
+      const regionCheckboxes = document.querySelectorAll('.region-filter:checked');
+      filterState.regions = Array.from(regionCheckboxes).map(cb => cb.value);
+      
+      // Coletar capacidades selecionadas
+      const capacityCheckboxes = document.querySelectorAll('.capacity-filter:checked');
+      filterState.capacities = Array.from(capacityCheckboxes).map(cb => cb.value);
+      
+      // Aplicar filtros
+      filteredData = countriesData.filter(country => {
+        // Filtro de região
+        const regionMatch = filterState.regions.includes('all') || 
+                          filterState.regions.includes(country.regiao);
+        
+        // Filtro de capacidade
+        const capacityMatch = filterState.capacities.includes('all') || 
+                            filterState.capacities.includes(country.capacidade);
+        
+        return regionMatch && capacityMatch;
+      });
+      
+      // Aplicar ordenação
+      switch (filterState.sortBy) {
+        case 'name':
+          filteredData.sort((a, b) => a.pais.localeCompare(b.pais));
+          break;
+        case 'active':
+          filteredData.sort((a, b) => b.ativas - a.ativas);
+          break;
+        case 'total':
+          filteredData.sort((a, b) => b.totais - a.totais);
+          break;
+        case 'budget':
+          filteredData.sort((a, b) => b.orcamento - a.orcamento);
+          break;
+      }
+    }
+    
+    // Atualizar visualizações com base nos dados filtrados
+    function updateVisualizations() {
+      // Atualizar tabela
       populateTable(filteredData);
+      
+      // Atualizar estatísticas
       updateStats(filteredData);
+      
+      // Atualizar tipo de gráfico
+      updateChartTypes();
+      
+      // Renderizar gráficos
+      renderCharts();
+    }
+    
+    // Atualizar tipos de gráficos com base nos filtros
+    function updateChartTypes() {
+      if (primaryChart) {
+        primaryChart.destroy();
+      }
+      
+      if (secondaryChart) {
+        secondaryChart.destroy();
+      }
+      
+      // Definir tipos de gráficos com base na seleção
+      const chartType = filterState.chartType;
+      switch (chartType) {
+        case 'bar':
+          // Configurações para o tipo bar
+          break;
+        case 'pie':
+          // Configurações para o tipo pie
+          break;
+        case 'line':
+          // Configurações para o tipo line
+          break;
+        case 'radar':
+          // Configurações para o tipo radar
+          break;
+      }
+    }
+    
+    // Alternar entre seções
+    function toggleSection(sectionId) {
+      const sections = document.querySelectorAll('.section, #dashboard');
+      
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+      
+      document.getElementById(sectionId).style.display = 'block';
     }
 
     // Popula a tabela com dados
@@ -1561,7 +1638,7 @@
             <td>${row.pib}%</td>
             <td>${row.gastoNuclear}</td>
           </tr>
-        `
+        `;
       });
     }
 
